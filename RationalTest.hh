@@ -83,10 +83,52 @@ void constructorTest(void) {
 
 }
 
+void modifyTest(void) {
+
+    /* Testing negate() */
+    Rational n1(3, 4, false);
+    Rational n2(5, 6, true);
+
+    n1.negate();
+    n2.negate();
+
+    assert(n1.getNumerator() == 3 && n1.getDenominator() == 4 && n1.isNegative() == true);
+    assert(n2.getNumerator() == 5 && n2.getDenominator() == 6 && n2.isNegative() == false);
+
+    /* Testing invert() */
+    Rational i1(1, 2, false);
+    Rational i2(3, 4, true);
+
+    i1.invert();
+    i2.invert();
+
+    assert(i1.getNumerator() == 2 && i1.getDenominator() == 1 && i1.isNegative() == false);
+    assert(i2.getNumerator() == 4 && i2.getDenominator() == 3 && i2.isNegative() == true);
+
+    /* Special Case 1: Zero has no inverse element */
+    Rational i3;
+
+    bool caught = false;
+    try {
+	i3.invert();
+    } catch(std::exception& e) {
+	caught = true;
+    }
+
+    assert(caught);
+
+}
+
+} /* anonymous */
+
 /** Rational test function, collecting all test cases */
 void rationalTest(void) {
 
+    std::puts("--- Rational TC Running ---");
     constructorTest();
+    std::puts("-> Passed constructorTest()");
+    modifyTest();
+    std::puts("-> Passed modifyTest()");
 
     // TODO TC PLAN:
     //  -> Creating and verifying valid creation of Rational, all constructors (a/b/n, float, int, string, void)
@@ -97,9 +139,9 @@ void rationalTest(void) {
     //    -> comparisons (==, !=, <, >, <=, >=)
     //    -> arithmetic (+=, -=, *=, /=, +, -, *, /)
 
+    std::puts("--- Rational Tests Passed ---");
+
 }
 
-
-} /* anonymous */
 
 #endif /* RATIONAL_TEST_H */
