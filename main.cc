@@ -1,9 +1,14 @@
 /** Simple test main file */
 
-#include "Rational.hh"
+#include <iostream>
+
+#include "RationalTest.hh"
 
 int main(void) {
-    Rational r(-3.5f);
-    std::puts(r.toString().c_str());
+
+    /* Calling all Rational test cases */
+    rationalTest();
+    std::puts("--- Rational Tests Passed ---");
+
     return 0;
 }
