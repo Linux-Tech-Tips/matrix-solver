@@ -15,15 +15,6 @@
 
 #define FLOAT_CONVERSION_PRECISION 1000000
 
-/* TODO What To Make and Implement:
- *  -> DONE rational number, internal storage is two unsigned integers and a sign bit
- *  -> DONE has constructors with multiple things, including a string and float, both of which will attempt conversion
- *  -> DONE has overloaded operators to be usable as a regular number
- *  -> DONE has a built-in functionality to simplify the fraction whenever updated
- *  -> DONE can be converted into either a string or a floating point number
- *  -> tested thoroughly and with the numerous surely existing bugs fixed
- * */
-
 /** Rational Number, a signed fraction of two real numbers */
 class Rational {
 
