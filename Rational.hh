@@ -89,6 +89,7 @@ class Rational {
 	Rational(std::string number) {
 	    *this = Rational::fromString(number);
 	}
+	/** Constructor creating a Rational instance from a C string */
 	Rational(char const * number) {
 	    *this = Rational::fromString(number);
 	}
@@ -130,10 +131,12 @@ class Rational {
 	    return *this;
 	}
 
+	/** Returns the floating point representation of the rational number */
 	float toFloat(void) {
 	    return (m_negative ? -1.0f : 1.0f)*(static_cast<float>(m_a) / static_cast<float>(m_b));
 	}
 
+	/** Returns the string representation of the rational number, in the form of "A/B" */
 	std::string toString(void) {
 	    return (m_negative ? "-" : "") + std::to_string(m_a) + (m_b != 1 ? "/" + std::to_string(m_b) : "");
 	}
