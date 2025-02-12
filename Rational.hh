@@ -46,7 +46,7 @@ class Rational {
 	    uint32_t b = FLOAT_CONVERSION_PRECISION;
 	    bool negative = (number < 0.0f);
 	    /* Creating new Rational instance with the given parameters */
-	    return Rational(a, b, negative);
+	    return Rational {a, b, negative};
 	}
 
 	/** Static member function that creates a rational instance from a std::string. 
@@ -64,19 +64,19 @@ class Rational {
 		uint32_t a = std::stoi(matches[2].str());
 		uint32_t b = std::stoi(matches[3].str());
 		bool negative = (matches[1].str() == "-");
-		return Rational(a, b, negative);
+		return Rational {a, b, negative};
 
 	    } else {
 		/* String is invalid */
-		throw std::runtime_error("Rational Error: Invalid string format specified!");
+		throw std::runtime_error {"Rational Error: Invalid string format specified!"};
 	    }
 	}
 
     public:
 	/** Constructor creating a Rational instance from the numerator a, denominator b and sign boolean */
-	Rational(uint32_t a, uint32_t b, bool negative = false) : m_a(a), m_b(b), m_negative(negative) {
+	Rational(uint32_t a, uint32_t b, bool negative = false) : m_a{a}, m_b{b}, m_negative{negative} {
 	    if(m_b == 0)
-		throw std::runtime_error("Rational Error: Denominator can't be zero!");
+		throw std::runtime_error {"Rational Error: Denominator can't be zero!"};
 	    this->simplify();
 	}
 	/** Constructor creating a Rational instance from a floating point number */
@@ -84,7 +84,7 @@ class Rational {
 	    *this = Rational::fromFloat(number);
 	}
 	/** Constructor creating a Rational instance from an integer */
-	Rational(int number) : Rational(static_cast<float>(number)) {}
+	Rational(int number) : Rational{static_cast<float>(number)} {}
 	/** Constructor creating a Rational instance from a string, either containing a decimal number or a fraction of integers separated with a slash */
 	Rational(std::string number) {
 	    *this = Rational::fromString(number);
@@ -121,7 +121,7 @@ class Rational {
 	Rational& invert(void) {
 	    /* Check that the inversion won't result in a zero-division */
 	    if(m_a == 0) {
-		throw std::runtime_error("Rational Error: Zero has no inverse element");
+		throw std::runtime_error {"Rational Error: Zero has no inverse element"};
 	    }
 	    /* Invert a and b */
 	    uint32_t oldA = m_a;

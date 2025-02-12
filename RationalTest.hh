@@ -16,11 +16,11 @@ namespace {
 void constructorTest(void) {
 
     /* A/B/Negative Constructor */
-    Rational ar1(1, 2);
-    Rational ar2(3, 4);
-    Rational ar3(1, 2, true);
-    Rational ar4(6, 4);
-    Rational ar5(51, 6, true);
+    Rational ar1 {1, 2};
+    Rational ar2 {3, 4};
+    Rational ar3 {1, 2, true};
+    Rational ar4 {6, 4};
+    Rational ar5 {51, 6, true};
 
     assert(ar1.getNumerator() == 1 && ar1.getDenominator() == 2 && ar1.isNegative() == false);
     assert(ar2.getNumerator() == 3 && ar2.getDenominator() == 4 && ar2.isNegative() == false);
@@ -31,11 +31,11 @@ void constructorTest(void) {
     assert(ar5.getNumerator() == 17 && ar5.getDenominator() == 2 && ar5.isNegative() == true);
 
     /* Float Constructor */
-    Rational fr1(0.5f);
-    Rational fr2(-0.1f);
-    Rational fr3(0.33f);
-    Rational fr4(0.111111f);
-    Rational fr5(-12.7f);
+    Rational fr1 {0.5f};
+    Rational fr2 {-0.1f};
+    Rational fr3 {0.33f};
+    Rational fr4 {0.111111f};
+    Rational fr5 {-12.7f};
 
     assert(fr1.getNumerator() == 1 && fr1.getDenominator() == 2 && fr1.isNegative() == false);
     assert(fr2.getNumerator() == 1 && fr2.getDenominator() == 10 && fr2.isNegative() == true);
@@ -44,18 +44,18 @@ void constructorTest(void) {
     assert(fr5.getNumerator() == 127 && fr5.getDenominator() == 10 && fr5.isNegative() == true);
 
     /* Int Constructor */
-    Rational ir1(5);
-    Rational ir2(-325);
+    Rational ir1 {5};
+    Rational ir2 {-325};
 
     assert(ir1.getNumerator() == 5 && ir1.getDenominator() == 1 && ir1.isNegative() == false);
     assert(ir2.getNumerator() == 325 && ir2.getDenominator() == 1 && ir2.isNegative() == true);
 
     /* String Constructor */
-    Rational sr1("1/2");
-    Rational sr2("-5/7");
-    Rational sr3("9/12");
-    Rational sr4("0.5");
-    Rational sr5("-0.2");
+    Rational sr1 {"1/2"};
+    Rational sr2 {"-5/7"};
+    Rational sr3 {"9/12"};
+    Rational sr4 {"0.5"};
+    Rational sr5 {"-0.2"};
     
     assert(sr1.getNumerator() == 1 && sr1.getDenominator() == 2 && sr1.isNegative() == false);
     assert(sr2.getNumerator() == 5 && sr2.getDenominator() == 7 && sr2.isNegative() == true);
@@ -65,7 +65,7 @@ void constructorTest(void) {
 
     bool caught = false;
     try {
-	Rational sr6("5This is not valid!4");
+	Rational sr6 {"5This is not valid!4"};
     } catch(const std::exception& e) {
 	caught = true;
     }
@@ -77,7 +77,7 @@ void constructorTest(void) {
     assert(vr1.getNumerator() == 0 && vr1.getDenominator() == 1 && vr1.isNegative() == false);
 
     /* Special Case 1: Simplifying to zero */
-    Rational cr1(0, 45, true);
+    Rational cr1 {0, 45, true};
 
     assert(cr1.getNumerator() == 0 && cr1.getDenominator() == 1 && cr1.isNegative() == false);
 
@@ -86,8 +86,8 @@ void constructorTest(void) {
 void modifyTest(void) {
 
     /* Testing negate() */
-    Rational n1(3, 4, false);
-    Rational n2(5, 6, true);
+    Rational n1 {3, 4, false};
+    Rational n2 {5, 6, true};
 
     n1.negate();
     n2.negate();
@@ -96,8 +96,8 @@ void modifyTest(void) {
     assert(n2.getNumerator() == 5 && n2.getDenominator() == 6 && n2.isNegative() == false);
 
     /* Testing invert() */
-    Rational i1(1, 2, false);
-    Rational i2(3, 4, true);
+    Rational i1 {1, 2, false};
+    Rational i2 {3, 4, true};
 
     i1.invert();
     i2.invert();
@@ -120,14 +120,14 @@ void modifyTest(void) {
 
 void conversionTest(void) {
 
-    Rational r1(1, 2);
-    Rational r2(1, 3);
-    Rational r3(4, 9, true);
+    Rational r1 {1, 2};
+    Rational r2 {1, 3};
+    Rational r3 {4, 9, true};
     Rational r4;
-    Rational r5(0, 1, true);
-    Rational r6(1, 1);
-    Rational r7(36, 9);
-    Rational r8(5, 1, true);
+    Rational r5 {0, 1, true};
+    Rational r6 {1, 1};
+    Rational r7 {36, 9};
+    Rational r8 {5, 1, true};
 
     /* Testing conversion to float */
     assert(r1.toFloat() - 0.5f < 1.0f/FLOAT_CONVERSION_PRECISION);
@@ -153,8 +153,8 @@ void conversionTest(void) {
 
 void assignmentTest(void) {
 
-    Rational r1(1, 2);
-    Rational r2(3, 4, true);
+    Rational r1 {1, 2};
+    Rational r2 {3, 4, true};
     Rational r3 = r1;
 
     /* Testing that instances created as expected */
@@ -178,10 +178,10 @@ void assignmentTest(void) {
 
 void comparisonTest(void) {
 
-    Rational r1(1, 2);
-    Rational r2(1, 2, true);
-    Rational r3(4, 2);
-    Rational r4(1, 1);
+    Rational r1 {1, 2};
+    Rational r2 {1, 2, true};
+    Rational r3 {4, 2};
+    Rational r4 {1, 1};
 
     /* Testing equality */
     assert(r1 == r1);
@@ -218,10 +218,10 @@ void comparisonTest(void) {
 
 void arithmeticTestEq(void) {
 
-    Rational r1(1, 2);
-    Rational r2(5, 6);
-    Rational r3(8, 9, true);
-    Rational r4(3, 4, true);
+    Rational r1 {1, 2};
+    Rational r2 {5, 6};
+    Rational r3 {8, 9, true};
+    Rational r4 {3, 4, true};
 
     /* += test */
     r1 += r2;
@@ -288,9 +288,9 @@ void arithmeticTestEq(void) {
 
 void arithmeticTest(void) {
 
-    Rational r1(3, 4);
-    Rational r2(5, 6);
-    Rational r3(1, 3, true);
+    Rational r1 {3, 4};
+    Rational r2 {5, 6};
+    Rational r3 {1, 3, true};
 
     /* Addition test */
     Rational r4;
@@ -350,8 +350,8 @@ void arithmeticTest(void) {
 
 void arithmeticTestNum(void) {
 
-    Rational r1(1, 2);
-    Rational r2(5, 6);
+    Rational r1 {1, 2};
+    Rational r2 {5, 6};
     Rational r3;
     Rational r4;
     Rational r5;
