@@ -98,6 +98,9 @@ class Rational {
 	Rational(std::string number) {
 	    *this = Rational::fromString(number);
 	}
+	Rational(char const * number) {
+	    *this = Rational::fromString(number);
+	}
 	/** Constructor creating a Rational instance set to zero by default */
 	Rational(void) {
 	    m_a = 0;
@@ -141,7 +144,7 @@ class Rational {
 	}
 
 	std::string toString(void) {
-	    return (m_negative ? "-" : "") + std::to_string(m_a) + "/" + std::to_string(m_b);
+	    return (m_negative ? "-" : "") + std::to_string(m_a) + (m_b != 1 ? "/" + std::to_string(m_b) : "");
 	}
 
 	/* --- Operators --- */
@@ -195,10 +198,10 @@ class Rational {
 	    int64_t result = 0;
 	    if(this->m_b == rhs.m_b) {
 		/* Add sign-corrected numerators if denominators equal */
-		result = (this->m_negative ? -1 : 1)*(this->m_a) + (rhs.m_negative ? -1 : 1)*(rhs.m_a);
+		result = (this->m_negative ? -1 : 1)*static_cast<int64_t>(this->m_a) + (rhs.m_negative ? -1 : 1)*static_cast<int64_t>(rhs.m_a);
 	    } else {
 		/* Add sign-corrected denominator-corrected numerators */
-		int64_t result = (this->m_negative ? -1 : 1)*(this->m_a * rhs.m_b) + (rhs.m_negative ? -1 : 1)*(rhs.m_a * this->m_b);
+		result = (this->m_negative ? -1 : 1)*static_cast<int64_t>(this->m_a * rhs.m_b) + (rhs.m_negative ? -1 : 1)*static_cast<int64_t>(rhs.m_a * this->m_b);
 		this->m_b *= rhs.m_b;
 	    }
 	    /* Set the corresponding a and negative bool */

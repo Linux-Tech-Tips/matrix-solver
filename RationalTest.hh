@@ -116,7 +116,324 @@ void modifyTest(void) {
     }
 
     assert(caught);
+}
 
+void conversionTest(void) {
+
+    Rational r1(1, 2);
+    Rational r2(1, 3);
+    Rational r3(4, 9, true);
+    Rational r4;
+    Rational r5(0, 1, true);
+    Rational r6(1, 1);
+    Rational r7(36, 9);
+    Rational r8(5, 1, true);
+
+    /* Testing conversion to float */
+    assert(r1.toFloat() - 0.5f < 1.0f/FLOAT_CONVERSION_PRECISION);
+    assert(r2.toFloat() - 0.3333333f < 1.0f/FLOAT_CONVERSION_PRECISION);
+    assert(r3.toFloat() - -0.4444444f < 1.0f/FLOAT_CONVERSION_PRECISION);
+    assert(r4.toFloat() == 0.0f);
+    assert(r5.toFloat() == 0.0f);
+    assert(r6.toFloat() == 1.0f);
+    assert(r7.toFloat() == 4.0f);
+    assert(r8.toFloat() == -5.0f);
+
+    /* Testing conversion to string */
+    assert(r1.toString() == "1/2");
+    assert(r2.toString() == "1/3");
+    assert(r3.toString() == "-4/9");
+    assert(r4.toString() == "0");
+    assert(r5.toString() == "0");
+    assert(r6.toString() == "1");
+    assert(r7.toString() == "4");
+    assert(r8.toString() == "-5");
+
+}
+
+void assignmentTest(void) {
+
+    Rational r1(1, 2);
+    Rational r2(3, 4, true);
+    Rational r3 = r1;
+
+    /* Testing that instances created as expected */
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 3 && r2.getDenominator() == 4 && r2.isNegative() == true);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 2 && r3.isNegative() == false);
+
+    /* Testing reassignment behavior */
+    r1 = r2;
+
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == true);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 2 && r3.isNegative() == false);
+
+    /* Testing that assignment copies rather than reassigns reference */
+    r1.invert();
+    r1.negate();
+
+    assert(r1.getNumerator() == 4 && r1.getDenominator() == 3 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 3 && r2.getDenominator() == 4 && r2.isNegative() == true);
+}
+
+void comparisonTest(void) {
+
+    Rational r1(1, 2);
+    Rational r2(1, 2, true);
+    Rational r3(4, 2);
+    Rational r4(1, 1);
+
+    /* Testing equality */
+    assert(r1 == r1);
+    assert(r2 == r2);
+    assert(r3 == r3);
+    assert(r4 == r4);
+
+    r2.negate();
+    assert(r1 == r2);
+
+    assert(!(r1 == r3));
+    assert(!(r1 == r4));
+    assert(!(r3 == r4));
+
+    /* Testing not equal */
+    assert(r1 != r3);
+    assert(r1 != r4);
+    assert(r3 != r4);
+    assert(!(r1 != r2));
+
+    /* Testing greater/greater-equal/less/less-equal operators */
+    assert(r1 <= r2);
+    assert(r1 >= r2);
+    assert(!(r1 < r2));
+    assert(!(r1 > r2));
+
+    r2.negate();
+    assert(r2 < r1);
+    assert(r4 > r1);
+    assert(r3 > r4);
+    assert(r3 > r2);
+    assert(r4 > r2);
+}
+
+void arithmeticTestEq(void) {
+
+    Rational r1(1, 2);
+    Rational r2(5, 6);
+    Rational r3(8, 9, true);
+    Rational r4(3, 4, true);
+
+    /* += test */
+    r1 += r2;
+    assert(r1.getNumerator() == 4 && r1.getDenominator() == 3 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    r2 += r3;
+    assert(r2.getNumerator() == 1 && r2.getDenominator() == 18 && r2.isNegative() == true);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    r4 += r3;
+    assert(r4.getNumerator() == 59 && r4.getDenominator() == 36 && r4.isNegative() == true);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    /* -= test */
+    r4 -= r3;
+    assert(r4.getNumerator() == 3 && r4.getDenominator() == 4 && r4.isNegative() == true);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    r2 -= r3;
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    r1 -= r2;
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    /* *= test */
+    r1 *= r2;
+    assert(r1.getNumerator() == 5 && r1.getDenominator() == 12 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    r2 *= r3;
+    assert(r2.getNumerator() == 20 && r2.getDenominator() == 27 && r2.isNegative() == true);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    r4 *= r3;
+    assert(r4.getNumerator() == 2 && r4.getDenominator() == 3 && r4.isNegative() == false);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    /* /= test */
+    r4 /= r3;
+    assert(r4.getNumerator() == 3 && r4.getDenominator() == 4 && r4.isNegative() == true);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+    
+    r2 /= r3;
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+    assert(r3.getNumerator() == 8 && r3.getDenominator() == 9 && r3.isNegative() == true);
+
+    r1 /= r2;
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    /* Checking to make sure division by zero impossible */
+    Rational r0;
+    bool caught = false;
+    try {
+	r1 /= r0;
+    } catch(std::exception& e) {
+	caught = true;
+    }
+    assert(caught);
+}
+
+void arithmeticTest(void) {
+
+    Rational r1(3, 4);
+    Rational r2(5, 6);
+    Rational r3(1, 3, true);
+
+    /* Addition test */
+    Rational r4;
+    r4 = r1 + r2;
+    assert(r4.getNumerator() == 19 && r4.getDenominator() == 12 && r4.isNegative() == false);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    Rational r5 = r1 + r3;
+    assert(r5.getNumerator() == 5 && r5.getDenominator() == 12 && r5.isNegative() == false);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 3 && r3.isNegative() == true);
+
+    /* Subtraction test */
+    r4 = r1 - r2;
+    assert(r4.getNumerator() == 1 && r4.getDenominator() == 12 && r4.isNegative() == true);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    r5 = r1 - r3;
+    assert(r5.getNumerator() == 13 && r5.getDenominator() == 12 && r5.isNegative() == false);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 3 && r3.isNegative() == true);   
+
+    /* Multiplication test */
+    r4 = r1 * r2;
+    assert(r4.getNumerator() == 5 && r4.getDenominator() == 8 && r4.isNegative() == false);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    r5 = r1 * r3;
+    assert(r5.getNumerator() == 1 && r5.getDenominator() == 4 && r5.isNegative() == true);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 3 && r3.isNegative() == true);   
+   
+    /* Division test */
+    r4 = r1 / r2;
+    assert(r4.getNumerator() == 9 && r4.getDenominator() == 10 && r4.isNegative() == false);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+
+    r5 = r1 / r3;
+    assert(r5.getNumerator() == 9 && r5.getDenominator() == 4 && r5.isNegative() == true);
+    assert(r1.getNumerator() == 3 && r1.getDenominator() == 4 && r1.isNegative() == false);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 3 && r3.isNegative() == true);   
+
+    /* Zero division test */
+    Rational r0;
+    bool caught = false;
+    try {
+	r4 = r1 / r0;
+    } catch(std::exception& e) {
+	caught = true;
+    }
+    assert(caught);
+}
+
+void arithmeticTestNum(void) {
+
+    Rational r1(1, 2);
+    Rational r2(5, 6);
+    Rational r3;
+    Rational r4;
+    Rational r5;
+
+    /* Addition test */
+    r2 += 0.5f;
+    r2 += 1;
+    r2 += "2/3";
+    r3 = r1 + 0.5f;
+    r4 = r1 + 1;
+    r5 = r1 + "-5/4";
+
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 3 && r2.getDenominator() == 1 && r2.isNegative() == false);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 1 && r3.isNegative() == false);
+    assert(r4.getNumerator() == 3 && r4.getDenominator() == 2 && r4.isNegative() == false);
+    assert(r5.getNumerator() == 3 && r5.getDenominator() == 4 && r5.isNegative() == true);
+
+    /* Subtraction test */
+    r2 -= 0.5f;
+    r2 -= 1;
+    r2 -= "2/3";
+    r3 = r1 - 1.5f;
+    r4 = r1 - 1;
+    r5 = r1 - "-7/4";
+
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+    assert(r3.getNumerator() == 1 && r3.getDenominator() == 1 && r3.isNegative() == true);
+    assert(r4.getNumerator() == 1 && r4.getDenominator() == 2 && r4.isNegative() == true);
+    assert(r5.getNumerator() == 9 && r5.getDenominator() == 4 && r5.isNegative() == false);
+
+    /* Multiplication test */
+    r2 *= 0.5f;
+    r2 *= 2;
+    r2 *= "4/3";
+    r3 = r1 * 2.5f;
+    r4 = r1 * 3;
+    r5 = r1 * "-7/8";
+
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 10 && r2.getDenominator() == 9 && r2.isNegative() == false);
+    assert(r3.getNumerator() == 5 && r3.getDenominator() == 4 && r3.isNegative() == false);
+    assert(r4.getNumerator() == 3 && r4.getDenominator() == 2 && r4.isNegative() == false);
+    assert(r5.getNumerator() == 7 && r5.getDenominator() == 16 && r5.isNegative() == true);
+
+    /* Division test */
+    r2 /= 0.5f;
+    r2 /= 2;
+    r2 /= "4/3";
+    r3 = r1 / 0.3f;
+    r4 = r1 / 4;
+    r5 = r1 / "-3/7";
+
+    assert(r1.getNumerator() == 1 && r1.getDenominator() == 2 && r1.isNegative() == false);
+    assert(r2.getNumerator() == 5 && r2.getDenominator() == 6 && r2.isNegative() == false);
+    assert(r3.getNumerator() == 5 && r3.getDenominator() == 3 && r3.isNegative() == false);
+    assert(r4.getNumerator() == 1 && r4.getDenominator() == 8 && r4.isNegative() == false);
+    assert(r5.getNumerator() == 7 && r5.getDenominator() == 6 && r5.isNegative() == true);
+
+    /* Zero division test */
+    Rational r0;
+    int caught = 0;
+    /* Float conversion */
+    try {
+	r3 = r1 / 0.0f;
+    } catch(std::exception& e) {
+	++caught;
+    }
+    /* Int conversion */
+    try {
+	r3 = r1 / 0;
+    } catch(std::exception& e) {
+	++caught;
+    }
+    /* String conversion */
+    try {
+	r3 = r1 / "0/2";
+    } catch(std::exception& e) {
+	++caught;
+    }
+    assert(caught == 3);
 }
 
 } /* anonymous */
@@ -129,18 +446,20 @@ void rationalTest(void) {
     std::puts("-> Passed constructorTest()");
     modifyTest();
     std::puts("-> Passed modifyTest()");
-
-    // TODO TC PLAN:
-    //  -> Creating and verifying valid creation of Rational, all constructors (a/b/n, float, int, string, void)
-    //  -> Modifying the number using invert() and negate(), then verifying numbers using get... functions
-    //  -> Verifying conversion to string and to float
-    //  -> Verifying all overloaded operators
-    //    -> assignment
-    //    -> comparisons (==, !=, <, >, <=, >=)
-    //    -> arithmetic (+=, -=, *=, /=, +, -, *, /)
+    conversionTest();
+    std::puts("-> Passed conversionTest()");
+    assignmentTest();
+    std::puts("-> Passed assignmentTest()");
+    comparisonTest();
+    std::puts("-> Passed comparisonTest()");
+    arithmeticTestEq();
+    std::puts("-> Passed arithmeticTestEq()");
+    arithmeticTest();
+    std::puts("-> Passed arithmeticTest()");
+    arithmeticTestNum();
+    std::puts("-> Passed arithmeticTestNum()");
 
     std::puts("--- Rational Tests Passed ---");
-
 }
 
 
