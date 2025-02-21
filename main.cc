@@ -4,6 +4,7 @@
 
 #include "RationalTest.hh"
 #include "MatrixTest.hh"
+#include "MatrixUtilTest.hh"
 
 int main(void) {
 
@@ -12,6 +13,9 @@ int main(void) {
 
     /* Calling all Matrix test cases */
     matrixTest();
+
+    /* Calling all MatrixUtil test cases */
+    matrixUtilTest();
 
     return 0;
 }
