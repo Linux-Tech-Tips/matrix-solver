@@ -10,7 +10,7 @@
 #include <cassert>
 
 #include "Matrix.hh"
-#include "Rational.hh"
+#include "../Rational/Rational.hh"
 
 /** Function containing test cases for the Matrix class */
 void matrixTest(void);

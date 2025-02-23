@@ -1,10 +1,10 @@
-/** Simple test main file */
+/** Test Main file, meant to test functionality */
 
 #include <iostream>
 
-#include "RationalTest.hh"
-#include "MatrixTest.hh"
-#include "MatrixUtilTest.hh"
+#include "Rational/RationalTest.hh"
+#include "Matrix/MatrixTest.hh"
+#include "Matrix/MatrixUtilTest.hh"
 
 int main(void) {
 
