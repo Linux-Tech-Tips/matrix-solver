@@ -1,7 +1,7 @@
 /**
- * @file Matrix.hh
+ * @file MatrixUtil.hh
  * @author Martin
- * @brief File containing Matrix class utility functions
+ * @brief File containing Matrix utility functions
 */
 #ifndef MATRIX_UTIL_H
 #define MATRIX_UTIL_H
@@ -10,6 +10,7 @@
 
 #include "Matrix.hh"
 
+/** Namespace containing Matrix Row Operation functions */
 namespace MatrixRowOps {
 
     /** Substitutes a multiple of row2 from row1 (row1 -= multiple * row2) */
@@ -53,6 +54,7 @@ namespace MatrixRowOps {
 } /* namespace MatrixRowOps */
 
 
+/** Namespace containing Matrix Reduction functions */
 namespace MatrixReduce {
 
 // TODO FUNCTIONS TO REDUCE TO REF AND RREF
