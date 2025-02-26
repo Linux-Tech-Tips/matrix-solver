@@ -197,6 +197,39 @@ namespace MatrixReduce {
 	return true;
     }
 
+    /** Inverts the given matrix, returns whether successful or not */
+    template <typename T>
+    bool invert(Matrix<T>& m) {
+	/* Create the augmented Matrix to use for the inversion, twice the columns of m */
+	Matrix<T> augmented {2 * m.getCols(), m.getRows(), 0};
+	/* Populate the augmented Matrix */
+	for(size_t row = 0; row < augmented.getRows(); ++row) {
+	    /* Copying over left half */
+	    for(size_t col = 0; col < m.getCols(); ++col) {
+		augmented.at(col, row) = m.at(col, row);
+	    }
+	    /* Setting the correct pivot one in the right half */
+	    augmented.at(m.getCols() + row, row) = 1;
+	}
+	/* Reduce to RREF */
+	if(!toRREF(augmented))
+	    return false;
+	/* Check that the left is the identity matrix */
+	for(size_t row = 0; row < m.getRows(); ++row) {
+	    for(size_t col = 0; col < m.getCols(); ++col) {
+		if(augmented.at(col, row) != (row == col ? 1 : 0))
+		    return false;
+	    }
+	}
+	/* The left is the identity, overwrite m with the right half and return true */
+	for(size_t row = 0; row < m.getRows(); ++row) {
+	    for(size_t col = 0; col < m.getCols(); ++col) {
+		m.at(col, row) = augmented.at(m.getCols() + col, row);
+	    }
+	}
+	return true;
+    }
+
 } /* namespace MatrixReduce */
 
 

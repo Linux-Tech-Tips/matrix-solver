@@ -160,6 +160,38 @@ void matrixReduceTest(void) {
     std::puts(" -> matrixReduceTest(): Passed RREF TC");
 }
 
+void matrixInvertTest(void) {
+
+    Matrix<Rational> m1 {{4, 3}, {3, 2}};
+    Matrix<Rational> m2 {{5, 8}, {12, 34}};
+    Matrix<Rational> m3 {{4, 2, 3}, {7, 8, 6}, {1, 9, 5}};
+    Matrix<Rational> m4 {{1, 2, 3, 4}, {7, 8, 10, 11}, {9, 1, 6, 8}, {1, 9, 9, 9}};
+    Matrix<Rational> m5 {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    Matrix<Rational> m6 {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+    assert(MatrixReduce::invert(m1));
+    Matrix<Rational> r1 {{-2, 3}, {3, -4}};
+    assert(m1 == r1);
+
+    assert(MatrixReduce::invert(m2));
+    Matrix<Rational> r2 {{"17/37", "-4/37"}, {"-6/37", "5/74"}};
+    assert(m2 == r2);
+
+    assert(MatrixReduce::invert(m3));
+    Matrix<Rational> r3 {{"-14/51", "1/3", "-4/17"}, {"-29/51", "1/3", "-1/17"}, {"55/51", "-2/3", "6/17"}};
+    assert(m3 == r3);
+
+    assert(MatrixReduce::invert(m4));
+    Matrix<Rational> r4 {{"-3/26", "9/26", "-3/26", "-7/26"}, {"31/78", "21/26", "-47/78", "-49/78"}, {"-145/78", "-37/26", "89/78", "121/78"}, {"115/78", "15/26", "-41/78", "-61/78"}};
+    assert(m4 == r4);
+
+    assert(MatrixReduce::invert(m5));
+    Matrix<Rational> r5 {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    assert(m5 == r5);
+
+    assert(!MatrixReduce::invert(m6));
+}
+
 } /* anonymous */
 
 /** Function containing test cases for the Matrix class */
@@ -179,5 +211,7 @@ void matrixUtilTest(void) {
     std::puts("-> Passed formValidateTest()");
     matrixReduceTest();
     std::puts("-> Passed matrixReduceTest()");
+    matrixInvertTest();
+    std::puts("-> Passed matrixInvertTest()");
     std::puts("--- MatrixUtil MatrixReduce Tests Passed ---");
 }
