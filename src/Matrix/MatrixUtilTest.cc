@@ -43,17 +43,141 @@ void rowSwapTest(void) {
     assert(m.at(0, 0) == 1 && m.at(1, 0) == 2 && m.at(2, 0) == 3 && m.at(3, 0) == 4);
 }
 
+void formValidateTest(void) {
+
+    Matrix<Rational> m1 {{1, 2, 3, 4, 5}, {0, 1, 2, 3, 4}, {0, 0, 1, 2, 3}, {0, 0, 0, 1, 2}};
+    Matrix<Rational> m2 {{1, 2, 3, 4, 5}, {0, 0, 1, 2, 3}, {0, 0, 0, 1, 2}, {0, 0, 0, 0, 0}};
+    Matrix<Rational> m3 {{0, 1, 2, 3, 4}, {0, 0, 0, 1, 2}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
+
+    assert(MatrixReduce::isREF(m1));
+    assert(MatrixReduce::isREF(m2));
+    assert(MatrixReduce::isREF(m3));
+
+    Matrix<Rational> m4 {{1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}};
+    Matrix<Rational> m5 {{1, 2, 3, 4, 5}, {0, 2, 3, 4, 5}, {0, 0, 1, 2, 3}, {0, 0, 0, 1, 2}};
+    Matrix<Rational> m6 {{0, 1, 2, 3, 4}, {1, 2, 3, 4, 5}, {0, 0, 1, 2, 3}, {0, 0, 0, 1, 2}};
+
+    assert(!MatrixReduce::isREF(m4));
+    assert(!MatrixReduce::isREF(m5));
+    assert(!MatrixReduce::isREF(m6));
+
+    Matrix<Rational> m7 {{1, 0, 0, 0, 5}, {0, 1, 0, 0, 4}, {0, 0, 1, 0, 3}, {0, 0, 0, 1, 2}};
+    Matrix<Rational> m8 {{0, 1, 0, 0, 5}, {0, 0, 1, 0, 4}, {0, 0, 0, 1, 2}, {0, 0, 0, 0, 0}};
+    Matrix<Rational> m9 {{1, 2, 0, 0, 5}, {0, 0, 1, 0, 4}, {0, 0, 0, 1, 3}, {0, 0, 0, 0, 0}};
+
+    assert(MatrixReduce::isREF(m7, true));
+    assert(MatrixReduce::isREF(m8, true));
+    assert(MatrixReduce::isREF(m9, true));
+    assert(MatrixReduce::isRREF(m7));
+    assert(MatrixReduce::isRREF(m8));
+    assert(MatrixReduce::isRREF(m9));
+}
+
+void matrixReduceTest(void) {
+
+    /* --- REF TC --- */
+
+    Matrix<Rational> m1 = {{0, 2, 2}, {1, 3, 3}, {2, 4, 2}};
+    Matrix<Rational> m2 = {{1, 2, 3, 1}, {4, 5, 6, -2}, {7, 8, 3, 1}};
+    Matrix<Rational> m3 = {{1, 2, 3, 9}, {2, -1, 1, 8}, {3, 0, -1, 3}};
+    Matrix<Rational> m4 = {{1, 3, 3, 8, 5}, {0, 1, 3, 10, 8}, {0, 0, 0, -1, -4}, {0, 0, 0, 2, 8}};
+    Matrix<Rational> m5 = {{1, 2, -2, 7}, {0, 1, 5, 6}, {0, 0, 1, -3}, {0, 0, 0, 0}};
+
+    assert(!MatrixReduce::isREF(m1));
+    assert(MatrixReduce::toREF(m1));
+    assert(MatrixReduce::isREF(m1));
+
+    assert(!MatrixReduce::isREF(m2));
+    assert(MatrixReduce::toREF(m2));
+    assert(MatrixReduce::isREF(m2));
+
+    assert(!MatrixReduce::isREF(m3));
+    assert(MatrixReduce::toREF(m3));
+    assert(MatrixReduce::isREF(m3));
+
+    assert(!MatrixReduce::isREF(m4));
+    assert(MatrixReduce::toREF(m4));
+    assert(MatrixReduce::isREF(m4));
+
+    /* m5 is already in REF, so the first assert should ensure that it is */
+    assert(MatrixReduce::isREF(m5));
+    assert(MatrixReduce::toREF(m5));
+    assert(MatrixReduce::isREF(m5));
+
+    std::puts(" -> matrixReduceTest(): Passed REF TC");
+
+    /* --- REF->RREF TC --- */
+
+    assert(!MatrixReduce::isRREF(m1));
+    assert(MatrixReduce::REFtoRREF(m1));
+    assert(MatrixReduce::isRREF(m1));
+
+    assert(!MatrixReduce::isRREF(m2));
+    assert(MatrixReduce::REFtoRREF(m2));
+    assert(MatrixReduce::isRREF(m2));
+
+    assert(!MatrixReduce::isRREF(m3));
+    assert(MatrixReduce::REFtoRREF(m3));
+    assert(MatrixReduce::isRREF(m3));
+
+    assert(!MatrixReduce::isRREF(m4));
+    assert(MatrixReduce::REFtoRREF(m4));
+    assert(MatrixReduce::isRREF(m4));
+
+    assert(!MatrixReduce::isRREF(m5));
+    assert(MatrixReduce::REFtoRREF(m5));
+    assert(MatrixReduce::isRREF(m5));
+
+    std::puts(" -> matrixReduceTest(): Passed REF->RREF TC");
+
+    /* --- RREF TC --- */
+    Matrix<Rational> m6 = {{0, 2, 2}, {1, 3, 3}, {2, 4, 2}};
+    Matrix<Rational> m7 = {{1, 2, 3, 1}, {4, 5, 6, -2}, {7, 8, 3, 1}};
+    Matrix<Rational> m8 = {{1, 2, 3, 9}, {2, -1, 1, 8}, {3, 0, -1, 3}};
+    Matrix<Rational> m9 = {{1, 3, 3, 8, 5}, {0, 1, 3, 10, 8}, {0, 0, 0, -1, -4}, {0, 0, 0, 2, 8}};
+    Matrix<Rational> m10 = {{1, 2, -2, 7}, {0, 1, 5, 6}, {0, 0, 1, -3}, {0, 0, 0, 0}};
+
+    assert(!MatrixReduce::isRREF(m6));
+    assert(MatrixReduce::toRREF(m6));
+    assert(MatrixReduce::isRREF(m6));
+
+    assert(!MatrixReduce::isRREF(m7));
+    assert(MatrixReduce::toRREF(m7));
+    assert(MatrixReduce::isRREF(m7));
+
+    assert(!MatrixReduce::isRREF(m8));
+    assert(MatrixReduce::toRREF(m8));
+    assert(MatrixReduce::isRREF(m8));
+
+    assert(!MatrixReduce::isRREF(m9));
+    assert(MatrixReduce::toRREF(m9));
+    assert(MatrixReduce::isRREF(m9));
+
+    assert(!MatrixReduce::isRREF(m10));
+    assert(MatrixReduce::toRREF(m10));
+    assert(MatrixReduce::isRREF(m10));
+
+    std::puts(" -> matrixReduceTest(): Passed RREF TC");
+}
+
 } /* anonymous */
 
 /** Function containing test cases for the Matrix class */
 void matrixUtilTest(void) {
 
-    std::puts("--- MatrixUtil RowOps TC Running ---");
+    std::puts("--- MatrixUtil MatrixRowOps TC Running ---");
     rowSubTest();
     std::puts("-> Passed rowSubTest()");
     rowMulDivTest();
     std::puts("-> Passed rowMulDivTest()");
     rowSwapTest();
     std::puts("-> Passed rowSwapTest()");
-    std::puts("--- MatrixUtil RowOps Tests Passed ---");
+    std::puts("--- MatrixUtil MatrixRowOps Tests Passed ---");
+
+    std::puts("--- MatrixUtil MatrixReduce TC Running ---");
+    formValidateTest();
+    std::puts("-> Passed formValidateTest()");
+    matrixReduceTest();
+    std::puts("-> Passed matrixReduceTest()");
+    std::puts("--- MatrixUtil MatrixReduce Tests Passed ---");
 }
