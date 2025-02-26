@@ -25,6 +25,15 @@ void rref(void);
 /** Asks the user for a Matrix, prints both REF and RREF */
 void forms(void);
 
+/** Asks the user for two Matrices, adds them */
+void add(void);
+
+/** Asks the user for two Matrices, subtracts the second from the first */
+void sub(void);
+
+/** Asks the user for two Matrices, multiplies them */
+void mul(void);
+
 /** Runs Rational and Matrix TCs */
 void test(void);
 
@@ -43,7 +52,7 @@ int main(int argc, char const ** argv) {
 
     /* Intro Text */
     std::puts("=== C++ Matrix (Gauss-Jordan Elimination) Solver ===");
-    std::puts("Enter command (ref/rref/forms/test/help/exit)");
+    std::puts("Enter command (ref/rref/forms/add/sub/mul/test/help/exit)");
 
     /* Scanning command input from the user until exit */
     bool run = true;
@@ -57,6 +66,12 @@ int main(int argc, char const ** argv) {
 	    rref();
 	} else if(userIn == "forms") {
 	    forms();
+	} else if(userIn == "add") {
+	    add();
+	} else if(userIn == "sub") {
+	    sub();
+	} else if(userIn == "mul") {
+	    mul();
 	} else if(userIn == "test") {
 	    test();
 	} else if(userIn == "help") {
@@ -135,6 +150,54 @@ void forms(void) {
     std::printf("Matrix in RREF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
 }
 
+void add(void) {
+    std::puts("1.");
+    Matrix<Rational> m1;
+    enterMatrix(m1);
+    std::puts("2.");
+    Matrix<Rational> m2;
+    enterMatrix(m2);
+    std::printf("Entered Matrices:\n%s\n%s\n", m1.print([](Rational r) { return r.toString(); }).c_str(), m2.print([](Rational r) { return r.toString(); }).c_str());
+    try {
+        m1 += m2;
+	std::printf("Sum:\n%s\n", m1.print([](Rational r) { return r.toString(); }).c_str());
+    } catch(std::exception& e) {
+	std::printf("Matrix Addition Error: %s\n", e.what());
+    }
+}
+
+void sub(void) {
+    std::puts("1.");
+    Matrix<Rational> m1;
+    enterMatrix(m1);
+    std::puts("2.");
+    Matrix<Rational> m2;
+    enterMatrix(m2);
+    std::printf("Entered Matrices:\n%s\n%s\n", m1.print([](Rational r) { return r.toString(); }).c_str(), m2.print([](Rational r) { return r.toString(); }).c_str());
+    try {
+        m1 -= m2;
+	std::printf("Difference (Matrix1 - Matrix2):\n%s\n", m1.print([](Rational r) { return r.toString(); }).c_str());
+    } catch(std::exception& e) {
+	std::printf("Matrix Subtraction Error: %s\n", e.what());
+    }
+}
+
+void mul(void) {
+    std::puts("1.");
+    Matrix<Rational> m1;
+    enterMatrix(m1);
+    std::puts("2.");
+    Matrix<Rational> m2;
+    enterMatrix(m2);
+    std::printf("Entered Matrices:\n%s\n%s\n", m1.print([](Rational r) { return r.toString(); }).c_str(), m2.print([](Rational r) { return r.toString(); }).c_str());
+    try {
+        m1 *= m2;
+	std::printf("Product:\n%s\n", m1.print([](Rational r) { return r.toString(); }).c_str());
+    } catch(std::exception& e) {
+	std::printf("Matrix Multiplication Error: %s\n", e.what());
+    }
+}
+
 void test(void) {
     /* Calling all Rational test cases */
     rationalTest();
@@ -153,6 +216,9 @@ void help(void) {
 	      "   -> ref .... reduce to REF\n"
 	      "   -> rref ... reduce to RREF\n"
 	      "   -> forms .. reduce and show both REF and RREF\n"
+	      "   -> add .... add two matrices\n"
+	      "   -> sub .... subtract two matrices\n"
+	      "   -> mul .... multiply two matrices\n"
 	      "   -> test ... run program utility test cases\n"
 	      "   -> help ... display this help info\n"
 	      "   -> exit ... quit the program\n"

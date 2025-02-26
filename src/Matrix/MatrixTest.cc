@@ -144,6 +144,60 @@ void compareTest(void) {
     assert(m1 != m4 && m4 != m1 && m3 != m4 && m4 != m3);
 }
 
+void arithmeticTest(void) {
+
+    /* Addition */
+    Matrix<Rational> m1 {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}};
+    Matrix<Rational> m2 {{10, 20, 30, 40}, {50, 60, 70, 80}, {90, 100, 110, 120}};
+    Matrix<Rational> m3;
+
+    m3 = m1 + m2;
+    m1 += m2;
+
+    assert(m1 == m3);
+    assert(m3.at(0, 0) == 11 && m3.at(3, 0) == 44 && m3.at(0, 2) == 99 && m3.at(3, 2) == 132);
+
+    /* Multiplication */
+    Matrix<Rational> m4 {{1, 2}, {3, 4}, {5, 6}};
+    Matrix<Rational> m5 {{1, 2, 3}, {4, 5, 6}};
+    Matrix<Rational> m7;
+    Matrix<Rational> m8;
+
+    m7 = m4 * m5;
+    m8 = m5 * m4;
+    m4 *= m5;
+
+    assert(m7 != m8);
+    assert(m4 == m7 && m4 != m8);
+    assert(m7.getCols() == 3 && m7.getRows() == 3);
+    assert(m8.getCols() == 2 && m8.getRows() == 2);
+    assert(m7.at(0, 0) == 9);
+    assert(m8.at(0, 0) == 22);
+
+    /* Scalar-Matrix Multiplication */
+    m7 = m5 * 8;
+    m8 = 2 * m5;
+
+    assert(m7.getCols() == 3 && m7.getRows() == 2);
+    assert(m7.at(0, 0) == 8);
+    assert(m8.getCols() == 3 && m8.getRows() == 2);
+    assert(m8.at(0, 0) == 2);
+
+    /* Invalid shapes */
+    uint8_t caught = 0;
+    try {
+	m1 + m4;
+    } catch(std::exception& e) {
+	++caught;
+    }
+    try {
+	m1 * m4;
+    } catch(std::exception& e) {
+	++caught;
+    }
+    assert(caught == 2);
+}
+
 } /* anonymous */
 
 /** Function containing test cases for the Matrix class */
@@ -162,6 +216,8 @@ void matrixTest(void) {
     std::puts("-> Passed equalsTest()");
     compareTest();
     std::puts("-> Passed compareTest()");
+    arithmeticTest();
+    std::puts("-> Passed arithmeticTest()");
 
     std::puts("--- Matrix Tests Passed ---");
 }

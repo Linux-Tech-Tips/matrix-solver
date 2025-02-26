@@ -77,6 +77,10 @@ class Matrix {
 		m_cols = 0;
 	    }
 	}
+	/** Copy constructor */
+	Matrix(const Matrix<T>& other) {
+	    *this = other;
+	}
 	/** Empty constructor */
 	Matrix(void) {
 	    m_cols = 0;
@@ -162,6 +166,80 @@ class Matrix {
 
 	friend bool operator!=(const Matrix<T>& lhs, const Matrix<T>& rhs) {
 	    return !(lhs == rhs);
+	}
+
+	/* Arithmetic Operators */
+
+	Matrix<T>& operator+=(const Matrix<T>& rhs) {
+	    /* Validating that addition can be done */
+	    if(this->getRows() != rhs.getRows() || this->getCols() != rhs.getCols()) {
+		throw std::runtime_error {"Matrix Error: Can't add Matrices of different dimensions"};
+	    }
+	    /* Performing addition */
+	    for(size_t row = 0; row < this->getRows(); ++row) {
+		for(size_t col = 0; col < this->getCols(); ++col) {
+		    this->at(col, row) += rhs.at(col, row);
+		}
+	    }
+	    return *this;
+	}
+
+	friend Matrix<T> operator+(Matrix<T> lhs, const Matrix<T>& rhs) {
+	    lhs += rhs;
+	    return lhs;
+	}
+
+	friend Matrix<T> operator*(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+	    /* Validating that multiplication can be done */
+	    if(lhs.getCols() != rhs.getRows()) {
+		throw std::runtime_error {"Matrix Error: Can't multiply Matrices of incompatible dimensions"};
+	    }
+	    /* Make a new Matrix of the correct dimensions, multiply */
+	    Matrix<T> result {rhs.getCols(), lhs.getRows()};
+	    for(size_t row = 0; row < result.getRows(); ++row) {
+		for(size_t col = 0; col < result.getCols(); ++col) {
+		    /* Do the dot product */
+		    for(size_t idx = 0; idx < lhs.getCols(); ++idx) {
+			result.at(col, row) += lhs.at(idx, row) * rhs.at(col, idx);
+		    }
+		}
+	    }
+	    return result;
+	}
+
+	friend Matrix<T> operator*(const T& lhs, const Matrix<T>& rhs) {
+	    Matrix<T> result {rhs.getCols(), rhs.getRows()};
+	    for(size_t row = 0; row < rhs.getRows(); ++row) {
+		for(size_t col = 0; col < rhs.getCols(); ++col) {
+		    result.at(col, row) = lhs * rhs.at(col, row);
+		}
+	    }
+	    return result;
+	}
+
+	friend Matrix<T> operator*(const Matrix<T>& lhs, const T& rhs) {
+	    Matrix<T> result {lhs.getCols(), lhs.getRows()};
+	    for(size_t row = 0; row < lhs.getRows(); ++row) {
+		for(size_t col = 0; col < lhs.getCols(); ++col) {
+		    result.at(col, row) = lhs.at(col, row) * rhs;
+		}
+	    }
+	    return result;
+	}
+
+	Matrix<T> operator*=(const Matrix<T>& rhs) {
+	    *this = *this * rhs;
+	    return *this;
+	}
+
+	Matrix<T>& operator-=(const Matrix<T>& rhs) {
+	    *this += (-1 * rhs);
+	    return *this;
+	}
+
+	friend Matrix<T> operator-(Matrix<T> lhs, const Matrix<T>& rhs) {
+	    lhs -= rhs;
+	    return lhs;
 	}
 };
 
