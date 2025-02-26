@@ -13,24 +13,6 @@
 #include <initializer_list>
 #include <functional>
 
-/* TODO MAKE MATRIX CLASS
- * 
- * Features:
- *  generic, can be constructed of any data type with overloaded arithmetic and comparison operators
- *  stored as a continuous block of heap memory, converts indices, element access and modification [x,y] shorthand
- *  manages own memory
- *  row op functions - rowSub, rowMul, rowDiv, rowSwap
- *  function for fancy print
- *  potentially overloaded addition, subtraction and multiplication?
- *
- * Secondary file with Matrix reduction functions:
- *  matrix to REF function
- *  REF matrix to RREF function
- *  validity check for REF and RREF functions
- *  function to get solutions
- *
- * */
-
 /** Class representing an N by M matrix of any object */
 template <typename T>
 class Matrix {
