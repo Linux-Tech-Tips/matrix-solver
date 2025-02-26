@@ -241,6 +241,18 @@ class Matrix {
 	    lhs -= rhs;
 	    return lhs;
 	}
+
+
+	/* --- Static members --- */
+
+	/** Convenience function, returns the Identity matrix I_n of the given size n */
+	static Matrix<T> identity(size_t n) {
+	    Matrix<T> m {n, n, 0};
+	    for(size_t idx = 0; idx < n; ++idx) {
+		m.at(idx, idx) = 1;
+	    }
+	    return m;
+	}
 };
 
 #endif /* MATRIX_H */

@@ -198,6 +198,22 @@ void arithmeticTest(void) {
     assert(caught == 2);
 }
 
+void identityTest(void) {
+
+    Matrix<Rational> i1 = Matrix<Rational>::identity(1);
+    Matrix<Rational> i2 = Matrix<Rational>::identity(2);
+    Matrix<Rational> i3 = Matrix<Rational>::identity(3);
+    Matrix<Rational> i4 = Matrix<Rational>::identity(4);
+    Matrix<Rational> i5 = Matrix<Rational>::identity(5);
+
+    assert(i1.at(0, 0) == 1);
+    assert(i2.at(1, 1) == 1);
+    assert(i3.at(2, 2) == 1);
+    assert(i4.at(3, 3) == 1);
+    assert(i5.at(4, 4) == 1);
+
+}
+
 } /* anonymous */
 
 /** Function containing test cases for the Matrix class */
@@ -218,6 +234,8 @@ void matrixTest(void) {
     std::puts("-> Passed compareTest()");
     arithmeticTest();
     std::puts("-> Passed arithmeticTest()");
+    identityTest();
+    std::puts("-> Passed identityTest()");
 
     std::puts("--- Matrix Tests Passed ---");
 }
