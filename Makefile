@@ -38,7 +38,7 @@ DEPS_DIR := .dependencies
 DOCS_DIR := doxygen_doc
 
 # Additional compiler/linker flags
-CFLAGS := -std=c++23
+CFLAGS := -std=c++23 -Wall -Wextra -Werror
 LDFLAGS := 
 
 # Documentation

@@ -93,6 +93,10 @@ class Rational {
 	Rational(char const * number) {
 	    *this = Rational::fromString(number);
 	}
+	/** Copy constructor */
+	Rational(const Rational& other) {
+	    *this = other;
+	}
 	/** Constructor creating a Rational instance set to zero by default */
 	Rational(void) {
 	    m_a = 0;

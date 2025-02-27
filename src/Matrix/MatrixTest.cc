@@ -50,17 +50,17 @@ void accessTest(void) {
     /* Access test - out of bounds test */
     int caught = 0;
     try {
-	Rational r = m1.at(0, 3);
+	m1.at(0, 3);
     } catch(std::exception& e) {
 	++caught;
     }
     try {
-	Rational r = m1.at(4, 0);
+	m1.at(4, 0);
     } catch(std::exception& e) {
 	++caught;
     }
     try {
-	Rational r = m1.at(4, 3);
+	m1.at(4, 3);
     }  catch(std::exception& e) {
 	++caught;
     }
