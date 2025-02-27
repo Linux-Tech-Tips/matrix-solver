@@ -243,6 +243,6 @@ void help(void) {
 	      "   -> enter rational numbers in format [-]<A>[/<B>]\n"
 	      "      (A is the numerator, B the denominator, anything in '[]' is optional, anything in '<>' is mandatory, exclude the brackets when entering numbers)\n"
 	      "   -> separate each new number in the same row with a single space, end row with a line break\n"
-	      "   -> end Matrix input with EOF/Ctrl+d/Ctrl+z"
+	      "   -> end Matrix input by typing DONE or done on a new line"
     );
 }
