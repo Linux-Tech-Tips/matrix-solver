@@ -34,6 +34,9 @@ void sub(void);
 /** Asks the user for two Matrices, multiplies them */
 void mul(void);
 
+/** Asks the user for a Matrix, prints its inverse if it exists */
+void invert(void);
+
 /** Runs Rational and Matrix TCs */
 void test(void);
 
@@ -52,7 +55,7 @@ int main(int argc, char const ** argv) {
 
     /* Intro Text */
     std::puts("=== C++ Matrix (Gauss-Jordan Elimination) Solver ===");
-    std::puts("Enter command (ref/rref/forms/add/sub/mul/test/help/exit)");
+    std::puts("Enter command (ref/rref/forms/add/sub/mul/invert/test/help/exit)");
 
     /* Scanning command input from the user until exit */
     bool run = true;
@@ -72,6 +75,8 @@ int main(int argc, char const ** argv) {
 	    sub();
 	} else if(userIn == "mul") {
 	    mul();
+	} else if(userIn == "invert") {
+	    invert();
 	} else if(userIn == "test") {
 	    test();
 	} else if(userIn == "help") {
@@ -198,6 +203,17 @@ void mul(void) {
     }
 }
 
+void invert(void) {
+    Matrix<Rational> m;
+    enterMatrix(m);
+    std::printf("Entered Matrix:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    if(MatrixReduce::invert(m)) {
+	std::printf("Inverse:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    } else {
+	std::puts("Matrix Inverse Does Not Exist");
+    }
+}
+
 void test(void) {
     /* Calling all Rational test cases */
     rationalTest();
@@ -213,15 +229,16 @@ void help(void) {
     std::puts("HELP INFORMATION:\n"
 	      "This program reduces entered matrices to REF or RREF based on user preference.\n"
 	      " -> Available commands:\n"
-	      "   -> ref .... reduce to REF\n"
-	      "   -> rref ... reduce to RREF\n"
-	      "   -> forms .. reduce and show both REF and RREF\n"
-	      "   -> add .... add two matrices\n"
-	      "   -> sub .... subtract two matrices\n"
-	      "   -> mul .... multiply two matrices\n"
-	      "   -> test ... run program utility test cases\n"
-	      "   -> help ... display this help info\n"
-	      "   -> exit ... quit the program\n"
+	      "   -> ref ..... reduce to REF\n"
+	      "   -> rref .... reduce to RREF\n"
+	      "   -> forms ... reduce and show both REF and RREF\n"
+	      "   -> add ..... add two matrices\n"
+	      "   -> sub ..... subtract two matrices\n"
+	      "   -> mul ..... multiply two matrices\n"
+	      "   -> invert .. get the inverse of a given matrix\n"
+	      "   -> test .... run program utility test cases\n"
+	      "   -> help .... display this help info\n"
+	      "   -> exit .... quit the program\n"
 	      " -> Entering Matrices:\n"
 	      "   -> enter rational numbers in format [-]<A>[/<B>]\n"
 	      "      (A is the numerator, B the denominator, anything in '[]' is optional, anything in '<>' is mandatory, exclude the brackets when entering numbers)\n"
