@@ -96,35 +96,43 @@ int main(int argc, char const ** argv) {
 /* --- Function Implementations --- */
 
 void enterMatrix(Matrix<Rational>& m) {
-    std::puts("Enter Matrix (space separated Rational numbers, new line makes a new row, type DONE on a new line to stop):");
-    /* Going through user input row by row and saving to get full Matrix */
-    std::string matrix;
-    while(true) {
-	std::string row;
-	std::getline(std::cin, row);
-	if(row == "DONE" || row == "done")
-	    break;
-	matrix += row + "\n";
-    }
-    /* Processing user input to resize and populate Matrix */
-    size_t rows = static_cast<size_t>(std::count(matrix.begin(), matrix.end(), '\n'));
-    size_t cols = static_cast<size_t>(std::count(matrix.begin(), std::find(matrix.begin(), matrix.end(), '\n'), ' ')) + 1;
-    m.resize(cols, rows);
-    /* Go through user input to populate Matrix with the correct values */
-    size_t col = 0, row = 0;
-    std::string number;
-    for(char c : matrix) {
-	if(c == '\n' || c == ' ') {
-	    m.at(col, row) = number;
-	    number = "";
-	    if(c == '\n') {
-		col = 0;
-		++row;
-	    } else {
-		++col;
+    bool entered = false;
+    while(!entered) {
+	try {
+	    std::puts("Enter Matrix (space separated Rational numbers, new line makes a new row, type DONE on a new line to stop):");
+	    /* Going through user input row by row and saving to get full Matrix */
+	    std::string matrix;
+	    while(true) {
+		std::string row;
+		std::getline(std::cin, row);
+		if(row == "DONE" || row == "done")
+		    break;
+		matrix += row + "\n";
 	    }
-	} else {
-	    number += c;
+	    /* Processing user input to resize and populate Matrix */
+	    size_t rows = static_cast<size_t>(std::count(matrix.begin(), matrix.end(), '\n'));
+	    size_t cols = static_cast<size_t>(std::count(matrix.begin(), std::find(matrix.begin(), matrix.end(), '\n'), ' ')) + 1;
+	    m.resize(cols, rows);
+	    /* Go through user input to populate Matrix with the correct values */
+	    size_t col = 0, row = 0;
+	    std::string number;
+	    for(char c : matrix) {
+		if(c == '\n' || c == ' ') {
+		    m.at(col, row) = number;
+		    number = "";
+		    if(c == '\n') {
+			col = 0;
+			++row;
+		    } else {
+			++col;
+		    }
+		} else {
+		    number += c;
+		}
+	    }
+	    entered = true;
+	} catch(std::exception& e) {
+	    std::printf("Error Entering Matrix: %s\nPlease Try Again!\n", e.what());
 	}
     }
 }
