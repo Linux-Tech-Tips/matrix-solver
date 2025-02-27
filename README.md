@@ -1,7 +1,9 @@
-# Linear Matrix Solver
+# Matrix Solver
 
-This project is a program developed in C++ which uses Gauss-Jordan elimination to solve a system of linear equations, represented as a matrix.
+This project is a linear algebra adjacent side project, created in an effort to further my understanding of the algorithms behind various matrix operations, mainly Gauss-Jordan elimination.
 
-The calculator is built to work with infinite/arbitrary precision, using a custom fraction data type.
+The main component of the project is a C++ program, capable of finding the Reduced Row Echelon Form, Row Echelon Form or an Inverse of a Matrix, among others.
 
-As of now, the project is work in progress.
+Along with my understanding of the maths concepts, the project was also made with the intention of improving my C++ skill in mind.
+
+More information on this project can be found in the accompanying documentation.
