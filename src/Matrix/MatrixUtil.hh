@@ -115,8 +115,9 @@ namespace MatrixReduce {
 		if(m.at(currentCol, rowIdx) != 0)
 		    break;
 	    }
-	    /* If no row with a scalar at this column found, increment the column and try again */
+	    /* If no row with a scalar at the current column found, increment the column and try again */
 	    if(rowIdx == m.getRows()) {
+		/* Increment column and indicate that a pivot was skipped */
 		++currentCol;
 		++skippedPivots;
 		continue;
@@ -146,8 +147,8 @@ namespace MatrixReduce {
 	    /* Move to the next column */
 	    ++currentCol;
 	}
-	/* Once the loop is done, the Matrix should be in REF */
-	return true;
+	/* Once the loop is done, the Matrix should be in REF, return only after a validity check to be sure */
+	return isREF(m);
     }
 
     /** Reduces a Matrix that is in REF to Reduced Row Echelon Form (RREF), returns false if incorrect Matrix given */
@@ -177,8 +178,8 @@ namespace MatrixReduce {
 		return false;
 	    }
 	}
-	/* Once the loop is done, the REF Matrix should be in RREF */
-	return true;
+	/* Once the loop is done, the REF Matrix should be in RREF, return only after a validity check to be sure */
+	return isRREF(m);
     }
 
     /** Reduces a Matrix to Reduced Row Echelon Form (RREF) */

@@ -141,26 +141,36 @@ void ref(void) {
     Matrix<Rational> m;
     enterMatrix(m);
     std::printf("Entered Matrix:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
-    MatrixReduce::toREF(m);
-    std::printf("Matrix in REF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    if(MatrixReduce::toREF(m))
+        std::printf("Matrix in REF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    else
+	std::puts("Error Reducing Matrix to REF!");
 }
 
 void rref(void) {
     Matrix<Rational> m;
     enterMatrix(m);
     std::printf("Entered Matrix:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
-    MatrixReduce::toRREF(m);
-    std::printf("Matrix in RREF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    if(MatrixReduce::toRREF(m))
+        std::printf("Matrix in RREF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    else
+	std::puts("Error Reducing Matrix to RREF!");
 }
 
 void forms(void) {
     Matrix<Rational> m;
     enterMatrix(m);
     std::printf("Entered Matrix:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
-    MatrixReduce::toREF(m);
-    std::printf("Matrix in REF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
-    MatrixReduce::REFtoRREF(m);
-    std::printf("Matrix in RREF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    if(!MatrixReduce::toREF(m)) {
+	std::puts("Error Reducing Matrix to REF!");
+	return;
+    } else {
+        std::printf("Matrix in REF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    }
+    if(MatrixReduce::REFtoRREF(m))
+        std::printf("Matrix in RREF:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
+    else
+	std::puts("Error Reducing Matrix to RREF!");
 }
 
 void add(void) {
@@ -218,7 +228,7 @@ void invert(void) {
     if(MatrixReduce::invert(m)) {
 	std::printf("Inverse:\n%s\n", m.print([](Rational r) { return r.toString(); }).c_str());
     } else {
-	std::puts("Matrix Inverse Does Not Exist");
+	std::puts("Matrix Inverse Does Not Exist, or Could Not Be Found");
     }
 }
 
