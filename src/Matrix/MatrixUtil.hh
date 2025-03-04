@@ -201,6 +201,9 @@ namespace MatrixReduce {
     /** Inverts the given matrix, returns whether successful or not */
     template <typename T>
     bool invert(Matrix<T>& m) {
+	/* Check that the matrix is square before attempting inverse */
+	if(m.getCols() != m.getRows())
+	    return false;
 	/* Create the augmented Matrix to use for the inversion, twice the columns of m */
 	Matrix<T> augmented {2 * m.getCols(), m.getRows(), 0};
 	/* Populate the augmented Matrix */
