@@ -1,6 +1,7 @@
 build
 .dependencies
 doxygen_doc
+project_doc
 *.o
 *.elf
 *.swp

@@ -1,0 +1,226 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[hidelinks]{hyperref}
+\setlength\parindent{0pt}
+
+\usepackage[skip=10pt plus1pt, indent=0pt]{parskip}
+
+% Title specification
+\title{Matrix Solver - Accompanying Documentation}
+\author{Martin Klačer \\ University of Galway}
+
+\begin{document}
+
+% Title Page
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+% Introduction
+
+\section{Introduction}
+
+This project is a linear algebra adjacent work, created with the intention of furthering my understanding of various linear algebra concepts, mainly including matrices.
+
+The main component of the project is a C++ program, capable of performing a number of matrix operations.
+The feature set also allows for arbitrary finite (rational, rather than real) precision, using rational numbers over IEEE-754 floating point representations.
+
+This document briefly describes the history/development process, feature set and usage of the program.
+
+% Development
+
+\section{Development}
+
+The idea for the project was sparked by a linear algebra class at the University of Galway, covering matrices and Gauss-Jordan elimination.
+At one point, an online tool for reducing matrices to row echelon forms automatically was mentioned, which interested me.
+
+Mainly, as a Computer Science student, I thought to myself - hold on I can do that!
+Which lead to the idea of developing a matrix reduction calculator, which then spiralled to what this project is now.
+
+% Development - Python
+
+\subsection{Python}
+
+The first thing to be decided was the programming language.
+I opted to use Python, since it's simple and works well for smaller projects and prototypes.
+
+The first step was to internally define what a Matrix would be.
+This ended up being a simple 2D list, meaning a list containing other lists.
+Along with this, I made sure to create a Matrix validation function, which ensured a variable given to it was indeed a correctly sized 2D list.
+
+Following this, I wrote a few functions to perform the elementary row operations, to aid the elimination algorithm.
+
+Afterwards, I moved on to developing the actual reduction algorithm itself.
+I decided to implement two functions, one to reduce any Matrix to a Row Echelon Form, and the second to reduce a Matrix already in REF to its Reduced Row Echelon Form.
+
+The algorithm to reduce a matrix to REF was fairly simple, inspired by my understanding of the topic, lecture notes and the Row Echelon Form Wikipedia page.
+The program goes through all the rows in the matrix, and performs the following steps:
+
+\begin{enumerate}
+  \item Find the next row with a non-zero scalar at the current pivot position on the diagonal;
+  \item if the row isn't in the correct position, swap it so it's correct, to ensure the pivots go from left to right;
+  \item if the non-zero scalar isn't preceded by leading zeros, subtract the previous rows to ensure all leading places are zero;
+  \item if the pivot position ends up being different from one, multiply the row by this number's inverse to reduce it to one.
+\end{enumerate}
+
+Following these steps until the last row/last pivot point was reached seemed to work well enough for the few matrices I was using for testing purposes.
+
+Once the Matrix was in REF, the function to reduce it to RREF wasn't too difficult to implement.
+The Python version works in the following manner:
+
+\begin{enumerate}
+  \item Go through each row in the given matrix in REF, and:
+  \item for any trailing non-zero scalars, subtract a multiple the row with the appropriate pivot one to reduce the numbers to zero.
+\end{enumerate}
+
+This approach was a fairly naive, intuitive attempt to transfer my (inherently imprecise and not exactly algorithmic) ability to solve elimination problems into a computer program.
+In retrospect, it had a noticable amount of bugs, a few of which I discovered fairly early on as well.
+However, there were other issues with this version that bothered me.
+
+% Development - Scope Creep
+
+\subsection{Scope Creep}
+
+One feature I found lacking fairly quickly was the inherent lack of precision given IEE-defined floating point numbers.
+Due to how numbers are stored in a computer memory, any floating point number representation will inherently have rounding errors after a few decimal places.
+This is mainly because a floating point system is inherently imprecise for rational numbers with infinitely repeating decimal places (such as $1/3$ being approximately $0.\overline{333}...$).
+
+I then decided that, before fixing the present (but not urgent) errors, it would simply be more fun to try to increase the precision of the program.
+
+Luckily, I found, Python has a built in data type for Rational numbers.
+My luck was short-lived, though, as multiplying a Python Rational with a Python IEEE floating point number results in a floating point number, and thus, a loss of precision.
+
+What followed were a few of attempts to exclude any and all floating point numbers from my Python code, by converting them to Rational numbers or removing them altogether.
+Those were, needless to say, unsuccessful, as a hidden float somewhere kept disturbing my matrices, and so I had to resort to a different solution.
+
+Clearly, the optimal step to take in this case is to rewrite the program in a language which cares about data types, right?
+And thus, I decided to use C++ for the next step of this side project.
+
+Now, C++ doesn't have its own Rational data type, which most certainly suggests that the best course of action is simply to implement my own.
+Similarly, though C++ does have built-in dynamic list data types, I, for some reason, decided it would be more fun to make a custom data type for a Matrix.
+
+And so, the project turned from a single-file Python script written in an afternoon into a 10-file C++ project with two custom data types, a handful of utility and test functions and a command-line application using said functions.
+
+% Development - C++
+
+\subsection{C++}
+
+In C++, the first steps were, similarly to Python, to define what a Matrix would be, and in addition, what a Rational number would be.
+
+Using the magic of Object Oriented Programming, I created two classes, one for a rational number, and one for a matrix, of any size, of any data type.
+
+% Rational class description
+\subsubsection{Rational class}
+
+The Rational data type is internally represented using three values - the numerator, the denominator and a sign.
+Both the numerator and denominator are unsigned 32-bit integers, meaning both can go from $0$ up to a maximum value of $2^{32}-1$.
+This means the largest (or smallest) number representable using this data type is $\pm\frac{2^{32}-1}{1}$, and the number with the value closest to zero is $\frac{1}{2^{32}-1}$.
+
+Using the sign bit allows the representation to avoid issues with double negatives - 
+if both the numerator and denominator were signed, it would lead to duplicate values in cases where the absolute values of each are equal, and the sign is opposite.
+
+I could have also used a signed numerator and an unsigned denominator, but the implementation with an extra byte for the sign leaves more precision (both unsigned 32-bit),
+as well as making it easier to work with the sign in other parts of the code.
+The sign variable would, technically, only need a single bit of storage, however, since the smallest data type in C++ takes an entire byte, that's what the sign takes as well.
+
+There are a few interesting parts of the Rational number code I will describe in further detail:
+\begin{itemize}
+  \item \textbf{simplified form},
+  \item \textbf{conversion from floating point numbers},
+  \item \textbf{overloaded operators}.
+\end{itemize}
+
+The other parts of the code are standard, as one might expect.
+
+\paragraph{Simplified Form:}
+
+To make working with instances of the Rational type easier, one basic functionality I implemented is that any Rational number instance will always try to exist in simplified form.
+There is an internal, private member function called \texttt{simplify}, which divides both the numerator and denominator with their greatest common divisor, if one greater than one exists.
+Every time any operation is performed which changes either the numerator and denominator, this function is called, and therefore, the Rational is kept in its simplified form.
+
+\paragraph{Conversion From Floating Point Numbers:}
+
+Since the Rational class is a proper implementation, it must also naturally include the ability to construct a Rational instance out of different data types.
+This allows users to write simpler code, as any data types convertible to Rational can be implicitly converted, without the need for conversion to be explicitly coded.
+For this reason, there are conversion functions from an IEEE float, integer number and a C++ built-in character string (representing a fraction, separated with a '/').
+
+The conversion from a float is a bit more interesting than the other ones, which are very straightforward.
+The conversion will inherently be imprecise, so for simplicity's sake, I didn't go through the trouble of implementing any particularly complicated algorithms.
+Because of the IEEE floating point standard, according to internet sources, the decimal point precision is about seven significant digits.
+Therefore, given a floating point number $f$, the conversion simply sets the numerator to be $10^7*f$, and the denominator to $10^7$.
+
+\paragraph{Overloaded Operators:}
+
+So that the Rational class is easier to use, it takes advantage of one C++ feature called operator overloading.
+This basically means that the Rational data type can implement custom behavior for any arithmetic or comparison operator, when done on two Rational instances.
+
+This, in addition to the previously mentioned conversions, allows us to write code such as \texttt{Rational r; r += "5/7";}, which makes using the Rational class in code much easier.
+
+
+% Matrix class description
+\subsubsection{Matrix class}
+
+The Matrix class represents a 2D field of values, of arbitrary size (considering the limits of the computer, of course), of any data type.
+
+The class being able to use nearly any data type is achieved using a C++ feature called generic types.
+This allows the Matrix class code to use a template type \texttt{T} rather than any specific type, replacing \texttt{T} with any specific type once a Matrix is instantiated.
+
+For the data contained within the matrix, the class needs to keep track of both the data contained within it and the shape - its rows and columns.
+Any two matrices populated with the same numbers but with a different distribution of rows and columns will not be equal, therefore, this has to be accounted for.
+The Matrix class stores the number of rows and columns as two separate numeric variables, and the data inside it as a contiguous block of memory.
+
+The Matrix class can be indexed into using the \texttt{.at(column, row)} member function, which uses an internal private member function to calculate the flat index within the data block.
+The flat index calculation is the following: $I_f = (I_r * C) + I_c$, given the flat index $I_f$, the row index $I_r$, the column index $I_c$ and the number of columns $C$.
+
+The Matrix class overloads operators as well, but to a more limited extent.
+Notably, in terms of comparison, only the 'equals' and 'not equal' operators are considered, since matrices don't have a clearly defined total order.
+In terms of arithmetic operations, only addition, subtraction, scalar multiplication and matrix multiplication are considered, as division is also not clearly defined.
+
+The Matrix class itself contains no functionality to perform elementary row operations or matrix reduction, as I found it to be out of scope for the class itself.
+For the sake of structure and clarity, this functionality is separated into various additional utility functions.
+
+
+% Utility functions description
+\subsubsection{Utility Functions}
+
+The Matrix Utility Functions are contained in the file \texttt{MatrixUtil.hh}. They're organised into two groups (grouped under C++ namespaces): \textbf{MatrixRowOps}, containing functions to perform Elementary Row Operations, and \textbf{MatrixReduce}, containing functions to reduce a matrix to echelon forms and anything adjacent to that.
+
+These functions are split off into a separate place, since I wouldn't consider them properties of a matrix itself. Any matrix altered by an elementary row operation won't be equal to the original matrix. Even though it will be equivalent in terms of describing a solution set to a system of linear equations, it won't be the same matrix, so I wouldn't consider the operations its property.
+
+The \textbf{MatrixRowOps} part contains functions to subtract, multiply, divide and swap rows. All their implementations are very straightforward, going through on an element-by-element basis. The only necessary functions are addition, multiplitation and swap. Subtraction and division were implemented simply out of convenience, as they're used frequently in Gauss-Jordan elimination.
+
+The \textbf{MatrixReduce} functions cover functionality to validate whether a matrix is in REF or RREF, convert a matrix to REF, from REF to RREF and to RREF (utilising the previous two), as well as a function to calculate the inverse of any invertible matrix.
+
+... here TODO describe stuff on how the algorithm actually works. once it actually works.
+
+
+
+% Command-line application description
+\subsubsection{Command-line Application}
+
+TODO Here, just have a brief description of the CLI app exposing the matrix solver functions
+
+% Program Feature Set
+
+\section{Program Feature Set}
+
+TODO Here, just write out the feature set in an organized manner. Preferably feature set by class/file, and then feature set exposed through the app.
+
+
+% Program Usage
+
+\section{Program Usage}
+
+TODO Here, few brief technical manual-ish pages, outlining the usage of the app program
+
+
+% Conclusion
+
+\section{Conclusion}
+
+TODO Conclusion, kinda waffle, summary of what's going on, tie it back to LA, mention the uni course
+
+
+\end{document}
