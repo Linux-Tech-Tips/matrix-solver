@@ -7,6 +7,7 @@
 #define MATRIX_UTIL_H
 
 #include <utility>
+#include <algorithm>
 
 #include "Matrix.hh"
 
@@ -104,10 +105,20 @@ namespace MatrixReduce {
 	size_t currentCol = 0;
 	/* The number of pivots in the echelon that were skipped, to ensure rows swapped into the correct place */
 	size_t skippedPivots = 0;
-	/* The real column of the pivots at any current column */
+	/* The real column of the pivots at any current column, with -1 (unsigned overflow - max size_t number) implying there's no such pivot */
 	size_t pivots [m.getCols()];
+	std::fill_n(pivots, m.getCols(), -1);
 	/* Iterating through the Matrix until we get to the bottom row with the last pivot or until we run out of columns */
 	while((currentCol - skippedPivots) < m.getRows() && currentCol < m.getCols()) {
+
+	    /* First, try to subtract previous pivots (where they exist) to clear leading numbers where non-zero */
+	    for(size_t colIdx = 0; colIdx < currentCol; ++colIdx) {
+		if(m.at(colIdx, currentCol - skippedPivots) != 0 && pivots[colIdx] != static_cast<size_t>(-1)) {
+		    T scale = m.at(colIdx, currentCol - skippedPivots);
+		    MatrixRowOps::rowSub(m, currentCol - skippedPivots, scale, pivots[colIdx]);
+		}
+	    }
+
 	    /* Find next row with a non-zero scalar at the current column to continue the diagonal */
 	    size_t rowIdx;
 	    for(rowIdx = (currentCol - skippedPivots); rowIdx < m.getRows(); ++rowIdx) {
@@ -115,35 +126,36 @@ namespace MatrixReduce {
 		if(m.at(currentCol, rowIdx) != 0)
 		    break;
 	    }
-	    /* If no row with a scalar at the current column found, increment the column and try again */
+	    /* If no row with a scalar at the current column found, move to the next column and indicate pivot was skipped */
 	    if(rowIdx == m.getRows()) {
-		/* Increment column and indicate that a pivot was skipped */
 		++currentCol;
-		++skippedPivots;
+	        ++skippedPivots;
 		continue;
 	    }
+
+	    /* If finding next row with available non-zero pivot introduced any leading numbers, subtract them as well */
+	    for(size_t colIdx = 0; colIdx < currentCol; ++colIdx) {
+		if(m.at(colIdx, rowIdx) != 0 && pivots[colIdx] != static_cast<size_t>(-1)) {
+		    T scale = m.at(colIdx, rowIdx);
+		    MatrixRowOps::rowSub(m, rowIdx, scale, pivots[colIdx]);
+		}
+	    }
+
 	    /* Swap the row into the correct position if not already correct */
 	    if((rowIdx + skippedPivots) != currentCol) {
 		MatrixRowOps::rowSwap(m, rowIdx, currentCol);
-		/* Set the row index to the row we swapped to */
+		/* Set the row index to the row we swapped to for convenience */
 		rowIdx = currentCol;
 	    }
-	    /* If the row contains leading non-zero scalars, reduce until the leading numbers are all zero */
-	    for(size_t x = 0; x < currentCol; ++x) {
-		if(m.at(x, rowIdx) != 0) {
-		    T scale = m.at(x, rowIdx);
-		    MatrixRowOps::rowSub(m, rowIdx, scale, pivots[x]);
-		}
-	    }
-	    /* If the pivot is zero as well, retry iteration */
-	    if(m.at(currentCol, rowIdx) == 0)
-		continue;
+
 	    /* Reduce row diagonal to 1 */
 	    T divisor = m.at(currentCol, rowIdx);
 	    if(divisor != 1)
 		MatrixRowOps::rowDiv(m, rowIdx, divisor);
+
 	    /* Record real row location of pivot for the current column */
 	    pivots[currentCol] = (currentCol - skippedPivots);
+
 	    /* Move to the next column */
 	    ++currentCol;
 	}
