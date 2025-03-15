@@ -4,6 +4,7 @@
 \setlength\parindent{0pt}
 
 \usepackage[skip=10pt plus1pt, indent=0pt]{parskip}
+\usepackage{enumitem}
 
 % Title specification
 \title{Matrix Solver - Accompanying Documentation}
@@ -193,8 +194,52 @@ The \textbf{MatrixRowOps} part contains functions to subtract, multiply, divide 
 
 The \textbf{MatrixReduce} functions cover functionality to validate whether a matrix is in REF or RREF, convert a matrix to REF, from REF to RREF and to RREF (utilising the previous two), as well as a function to calculate the inverse of any invertible matrix.
 
-... here TODO describe stuff on how the algorithm actually works. once it actually works.
+\paragraph{Reduction to REF:}
 
+The function \texttt{toREF} of \textbf{MatrixReduce} is capable of reducing any given Matrix to its Row Echelon Form.
+
+The algorithm works in the following way:
+
+\begin{enumerate}[label*=\arabic*.]
+  \item Iterate through the columns in the Matrix, keeping track of where each subsequent pivot point is, either until the last pivot reached (bottom row), or until all columns processed.
+  \item For each Iteration, do:
+  \begin{enumerate}[label*=\arabic*.]
+    \item Consider the next row expected to contain the current pivot point. Go through the columns of this row up to the current column, and if non-zero, attempt to subtract a previously processed pivot point.
+    \item Once this is done, check if the current pivot point is non-zero. If not, go through the rest of the column to find a non-zero pivot point.
+    \item If no non-zero pivot point found in the column, this means that the pivot at this column doesn't exist, so the column is skipped and the loop skips to the next iteration.
+    \item If a non-zero point exists, mark the row index, and switch it with the current row.
+    \item At this point, if there are any non-zero leading numbers in said row, go through them and attempt to reduce by subtracting the previously processed corresponding pivot row.
+    \item If the pivot point is not equal to one, divide the row by its value to reduce the pivot to one.
+  \end{enumerate}
+\end{enumerate}
+
+Once this is done, the Matrix will be in Row Echelon Form.
+
+Based off multiple various tests, this works.
+The leading number subtraction being performed beforehand as well addresses the edge case where the point at the pivot is zero, but is lead by non-zero numbers, where subtracting those will leave the pivot non-zero.
+
+\paragraph{Converting REF to RREF:}
+
+The function \texttt{REFtoRREF} of \textbf{MatrixReduce} is capable of reducing a given Matrix in Row Echelon Form to its unique Reduced Row Echelon Form.
+
+The algorithm works in the following way:
+
+\begin{enumerate}
+  \item Check that the input Matrix is in REF, if not, end processing.
+  \item Go through each column, keeping track of the pivot point, and reduce any non-zero numbers above the pivot by subtracting an appropriate multiple of the pivot row.
+\end{enumerate}
+
+This successfully converts any Matrix in REF to its RREF.
+Since the input Matrix is in REF already, the algorithm can be fairly simple.
+
+\paragraph{Other Functions:}
+
+The function \texttt{toRREF} of \textbf{MatrixReduce} corresponds in functionality to \texttt{toREF}.
+For simplicity, modularity and ease of implementation, this function simply first uses \texttt{toREF} to convert the Matrix to REF, then \texttt{REFtoRREF} to get the RREF.
+
+The function \texttt{invert} of \textbf{MatrixReduce} converts a given input Matrix into its inverse, if such an inverse exists.
+The process of obtaining the inverse is, again, using elimination to RREF, with the augmented Matrix of the input on the left and the corresponding square identity on the right.
+Converting this to RREF gives us an augmented Matrix with the identity on the left, and the corresponding inverse on the right, if an inverse exists.
 
 
 % Command-line application description
