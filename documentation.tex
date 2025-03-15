@@ -245,27 +245,88 @@ Converting this to RREF gives us an augmented Matrix with the identity on the le
 % Command-line application description
 \subsubsection{Command-line Application}
 
-TODO Here, just have a brief description of the CLI app exposing the matrix solver functions
+The compiled program can be used in the command line.
+The way to execute it is simply by its name, as it takes no command line arguments.
+
+Once executed, the program runs an interactive text-based terminal, allowing the user to enter various commands.
+The overview of the commands is as follows:
+
+\begin{itemize}
+  \item ref ..... reduce to REF
+  \item rref .... reduce to RREF
+  \item forms ... reduce and show both REF and RREF
+  \item add ..... add two matrices
+  \item sub ..... subtract two matrices
+  \item mul ..... multiply two matrices
+  \item invert .. get the inverse of a given matrix
+  \item test .... run program utility test cases
+  \item help .... display this help info
+  \item exit .... quit the program
+\end{itemize}
+
+Running any command that makes use of matrices allows the user to then enter one or more matrices sequentially.
+
+Any Matrix can be entered as a sequence of lines, where each line is a space-separated row of numbers.
+Together, the sequence of rows makes the Matrix.
+Once done, the user simply types the word 'done' on a new empty row.
+
+The numbers can be entered in the Rational number string format, i.e. optionally a sign, then the numerator, and then optionally a slash symbol and the denominator.
+This can be concisely written down as \texttt{[-]<A>[/<B>]}, where the square brackets represent an optional symbol and the angle brackets a mandatory one.
+
+Most commands make use of matrices, and are fairly straightforward.
+
+The \texttt{test} command executes built-in test cases, which validates that the code works as expected.
+This can be very helpful when implementing new features, as it helps prevent undesired functionality regression.
+
+The \texttt{help} command displays a help menu with an overview of the commands, and \texttt{exit} quits the program.
+
 
 % Program Feature Set
 
 \section{Program Feature Set}
 
-TODO Here, just write out the feature set in an organized manner. Preferably feature set by class/file, and then feature set exposed through the app.
+The following is a structured overview of the program feature set, split up by class or file:
 
-
-% Program Usage
-
-\section{Program Usage}
-
-TODO Here, few brief technical manual-ish pages, outlining the usage of the app program
+\begin{itemize}
+  \item \textbf{Rational} (Class)
+  \begin{itemize}
+    \item Represent a rational number as a fraction, with arbitrary decimal point precision.
+    \item Convert a string or floating point number into a rational number/fraction.
+    \item Output the represented rational number as a string or floating point number.
+    \item Keep the rational number in its simplified form at all times.
+    \item Allow simple arithmetic operations to be correctly performed on Rational instances.
+  \end{itemize}
+  \item \textbf{Matrix} (Class)
+  \begin{itemize}
+    \item Represent a matrix as a 2D field (rows and columns) of any numeric data type.
+    \item Create a Matrix instance from either the shape, shape and initial number or an initialiser list.
+    \item Allow resizing, printing and obtaining information about a Matrix instance.
+    \item Allow addition and multiplication to be performed on two compatible Matrix instances.
+  \end{itemize}
+  \item \textbf{MatrixRowOps} (Namespace)
+  \begin{itemize}
+    \item Persorm the selected elementary row operations on a Matrix instance of any numeric type.
+  \end{itemize}
+  \item \textbf{MatrixReduce} (Namespace)
+  \begin{itemize}
+    \item Verify that a Matrix instance is in REF or RREF.
+    \item Reduce a Matrix instance to REF, from REF to RREF and to RREF.
+    \item Calculate the inverse of an invertible Matrix.
+  \end{itemize}
+\end{itemize}
 
 
 % Conclusion
 
 \section{Conclusion}
 
-TODO Conclusion, kinda waffle, summary of what's going on, tie it back to LA, mention the uni course
+This project has notably furthered both my understanding of linear algebra and matrices and of C++ programming.
+It also surprisingly ended up finished, with all the planned features implemented.
+The program will also end up being used as the Linear Algebra class extra-credit project, which is an added benefit.
 
+In passing, I thought of various additional features that the program could use, but that ended up being out of scope.
+Some of those may be implemented later, in future versions, if this project gets any updates.
+
+Overall, the project was interesting and fun to make, functions as well as I'd expect, and furthered my knowledge and understanding of various concepts in both maths and programming.
 
 \end{document}
