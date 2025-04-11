@@ -81,7 +81,7 @@ int main(int argc, char const ** argv) {
 	    test();
 	} else if(userIn == "help") {
 	    help();
-	} else if(userIn == "exit") {
+	} else if(userIn == "exit" || std::cin.eof()) {
 	    std::puts("Program Exit");
 	    run = false;
 	} else {
